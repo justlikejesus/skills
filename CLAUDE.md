@@ -69,6 +69,7 @@ Source-to-plugin mapping:
 | `seed-course-from-srt` | `school-seeders` |
 | `seed-quiz-from-srt` | `school-seeders` |
 | `course-content-lint` | `school-evaluators` |
+| `quiz-content-lint` | `school-evaluators` |
 
 When updating a mirrored skill:
 

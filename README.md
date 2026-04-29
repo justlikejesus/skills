@@ -43,6 +43,7 @@ _Just Like Jesus Ministries · Just Like Jesus School_
 | 스킬 | 설명 |
 | :--- | :--- |
 | [`course-content-lint`](./plugins/school-evaluators/skills/course-content-lint) | 기존 강의를 18개 등록 전환(enrollment-conversion) 규칙과 구조 규약에 대해 감사합니다. 6개 관점 점수표(전환·교수법·신학적 정합성·이중언어 균형·신뢰·일관성)와 표면별 위반 목록을 마크다운으로 출력합니다 |
+| [`quiz-content-lint`](./plugins/school-evaluators/skills/quiz-content-lint) | 기존 챕터 퀴즈를 15개 기계적 규칙·문항 유형별 규칙·자문 평가표(advisor rubric)에 대해 감사합니다. 6개 관점 점수표(문항 메커니즘·공정성/Bloom·자막 근거·커버리지/순환·이중언어 균형·교수법적 가치)와 문항별 위반 목록을 마크다운으로 출력합니다 |
 
 ### ⛪ Ministries (사역)
 
@@ -74,6 +75,7 @@ Claude Code 안에서 다음 명령어를 실행하세요.
 /seed-course-from-srt <srt-path> [additional-srt-paths...]
 /seed-quiz-from-srt <course-slug> <chapter-position-0indexed> <srt-path>
 /course-content-lint <course-slug> [--rule <N>[,N,...]] [--locale ko|en] [--snapshot] [--severity error|warn|info]
+/quiz-content-lint <course-slug> <chapter-position-0indexed> [--srt <path>] [--rule <ID>[,ID,...]] [--locale ko|en] [--snapshot] [--severity error|warn|info]
 ```
 
 ---
@@ -99,7 +101,9 @@ skills/
         ├── .claude-plugin/
         │   └── plugin.json
         └── skills/
-            └── course-content-lint/
+            ├── course-content-lint/
+            │   └── SKILL.md
+            └── quiz-content-lint/
                 └── SKILL.md
 ```
 

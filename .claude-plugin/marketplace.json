@@ -19,7 +19,7 @@
     {
       "name": "school-evaluators",
       "source": "./plugins/school-evaluators",
-      "description": "Read-only auditors for the Just Like Jesus School monorepo: lint courses against the enrollment-conversion ruleset and structural conventions.",
+      "description": "Read-only auditors for the Just Like Jesus School monorepo: lint courses and chapter quizzes against their respective seed-time rulesets.",
       "category": "school",
       "tags": ["school", "lint", "audit", "evaluate", "course", "quality"]
     }
