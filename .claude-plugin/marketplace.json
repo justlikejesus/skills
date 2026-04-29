@@ -12,9 +12,9 @@
     {
       "name": "school-seeders",
       "source": "./plugins/school-seeders",
-      "description": "Database seeders for the Just Like Jesus School monorepo: bible translations, courses from SRT, and chapter quizzes from SRT.",
+      "description": "Content tooling for the Just Like Jesus School monorepo: seed bible translations / courses / quizzes, and lint existing courses against the enrollment-conversion ruleset.",
       "category": "school",
-      "tags": ["school", "database", "seed", "srt", "bible", "course", "quiz"]
+      "tags": ["school", "database", "seed", "srt", "bible", "course", "quiz", "lint"]
     }
   ]
 }
