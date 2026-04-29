@@ -1,0 +1,9 @@
+{
+  "name": "school-seeders",
+  "description": "Database seeders for the Just Like Jesus School monorepo: bible translations, courses from SRT, and chapter quizzes from SRT.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Jay Cho",
+    "email": "jaycho1214@gmail.com"
+  }
+}

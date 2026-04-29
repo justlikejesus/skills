@@ -16,25 +16,29 @@ _Just Like Jesus Ministries · Just Like Jesus School_
 
 ## 📖 소개
 
-**Just Like Jesus Skills**는 사역(Ministries)과 학교(School) 두 영역을 하나의 마켓플레이스에서 관리하는 통합 저장소입니다. 모든 스킬은 `category`와 `tags`로 구분되어 있어, 필요한 영역의 도구를 쉽게 찾고 설치할 수 있습니다.
+**Just Like Jesus Skills**는 사역(Ministries)과 학교(School) 두 영역을 하나의 마켓플레이스에서 관리하는 통합 저장소입니다. 모든 플러그인은 `category`와 `tags`로 구분되어 있어, 필요한 영역의 도구를 쉽게 찾고 설치할 수 있습니다.
 
 > _"내가 너희에게 행한 것 같이 너희도 행하게 하려 하여 본을 보였노라" — 요한복음 13:15_
 
 ---
 
-## ✨ 제공 스킬
-
-### ⛪ Ministries (사역)
-
-| 플러그인 | 설명 |
-| :--- | :--- |
-| [`sermon-helper`](./plugins/sermon-helper) | 설교 개요, 묵상글, 소그룹 가이드를 작성하고 다듬어 줍니다 |
+## ✨ 제공 플러그인
 
 ### 🎓 School (학교)
 
-| 플러그인 | 설명 |
+#### [`school-seeders`](./plugins/school-seeders)
+
+`school-monorepo`의 Neon 데이터베이스를 채우는 시딩(seeding) 도구 모음입니다. 모든 스킬은 **두 단계 출력(데이터 파일 + 실행기)** + **단일 트랜잭션** + **재실행 가능(idempotent)** 패턴을 따릅니다.
+
+| 스킬 | 설명 |
 | :--- | :--- |
-| [`lesson-planner`](./plugins/lesson-planner) | 수업 계획, 학습 목표, 교실 활동을 생성합니다 |
+| [`seed-bible-translation`](./plugins/school-seeders/skills/seed-bible-translation) | OSIS XML, USFM, Zefania, JSON, CSV/TSV, SQLite 등 모든 일반적인 성경 포맷을 자동 인식하여 `bible_translations` / `bible_books` / `bible_verses` 테이블에 시드합니다 |
+| [`seed-course-from-srt`](./plugins/school-seeders/skills/seed-course-from-srt) | SRT 자막으로부터 한국어 + 영어 이중 언어의 강의 초안(제목, 설명, 챕터, 레슨, 강사 소개, TipTap `detail_page_json`, 비디오 챕터, 성경 구절 마커)을 생성하고 시드합니다. 슬러그가 이미 존재하면 _evaluate-and-feedback_ 모드로 전환됩니다 |
+| [`seed-quiz-from-srt`](./plugins/school-seeders/skills/seed-quiz-from-srt) | 기존 챕터에 부담 없는 시청 확인용(KO + EN) 퀴즈를 시드합니다. `multiple_choice` / `true_false` / `fill_blank`만 사용하며, 강조된 자막 구간을 근거로 합니다 |
+
+### ⛪ Ministries (사역)
+
+> 곧 추가될 예정입니다. 기여를 환영합니다!
 
 ---
 
@@ -48,18 +52,18 @@ Claude Code 안에서 다음 명령어를 실행하세요.
 /plugin marketplace add justlikejesus/skills
 ```
 
-### 2. 원하는 플러그인 설치
+### 2. 플러그인 설치
 
 ```shell
-/plugin install sermon-helper@jljm-skills
-/plugin install lesson-planner@jljm-skills
+/plugin install school-seeders@jljm-skills
 ```
 
 ### 3. 사용해 보기
 
 ```shell
-/sermon-outline
-/lesson-plan
+/seed-bible-translation <bible-file-path> [--code KRV] [--lang ko]
+/seed-course-from-srt <srt-path> [additional-srt-paths...]
+/seed-quiz-from-srt <course-slug> <chapter-position-0indexed> <srt-path>
 ```
 
 ---
@@ -69,19 +73,17 @@ Claude Code 안에서 다음 명령어를 실행하세요.
 ```
 skills/
 ├── .claude-plugin/
-│   └── marketplace.json          # 마켓플레이스 카탈로그
+│   └── marketplace.json                 # 마켓플레이스 카탈로그
 └── plugins/
-    ├── sermon-helper/             # ⛪ Ministries
-    │   ├── .claude-plugin/
-    │   │   └── plugin.json
-    │   └── skills/
-    │       └── sermon-outline/
-    │           └── SKILL.md
-    └── lesson-planner/            # 🎓 School
+    └── school-seeders/                  # 🎓 School
         ├── .claude-plugin/
         │   └── plugin.json
         └── skills/
-            └── lesson-plan/
+            ├── seed-bible-translation/
+            │   └── SKILL.md
+            ├── seed-course-from-srt/
+            │   └── SKILL.md
+            └── seed-quiz-from-srt/
                 └── SKILL.md
 ```
 
@@ -89,11 +91,10 @@ skills/
 
 ## 🛠️ 새 스킬 기여하기
 
-1. `plugins/<plugin-name>/` 디렉토리를 새로 만듭니다
-2. `.claude-plugin/plugin.json`에 메타데이터를 작성합니다
-3. `skills/<skill-name>/SKILL.md`에 스킬 내용을 작성합니다
-4. 루트의 `.claude-plugin/marketplace.json`에 항목을 추가합니다 (`category`는 `ministries` 또는 `school`)
-5. 로컬에서 검증한 뒤 PR을 보내주세요
+1. 적절한 플러그인 디렉토리 (`plugins/<plugin-name>/skills/`)에 새 스킬 폴더를 만듭니다
+2. `SKILL.md`에 frontmatter (`name`, `description`, `user-invocable`, 선택적으로 `argument-hint`)와 본문을 작성합니다
+3. 새 플러그인을 만들 경우 `.claude-plugin/plugin.json`을 추가하고 루트의 `marketplace.json`에 항목을 등록합니다 (`category`는 `ministries` 또는 `school`)
+4. 로컬에서 검증한 뒤 PR을 보내주세요
 
 ```shell
 /plugin validate .

@@ -10,18 +10,11 @@
   },
   "plugins": [
     {
-      "name": "sermon-helper",
-      "source": "./plugins/sermon-helper",
-      "description": "Drafts and refines sermon outlines, devotionals, and small-group guides.",
-      "category": "ministries",
-      "tags": ["ministries", "sermon", "devotional"]
-    },
-    {
-      "name": "lesson-planner",
-      "source": "./plugins/lesson-planner",
-      "description": "Generates lesson plans, learning objectives, and classroom activities.",
+      "name": "school-seeders",
+      "source": "./plugins/school-seeders",
+      "description": "Database seeders for the Just Like Jesus School monorepo: bible translations, courses from SRT, and chapter quizzes from SRT.",
       "category": "school",
-      "tags": ["school", "education", "curriculum"]
+      "tags": ["school", "database", "seed", "srt", "bible", "course", "quiz"]
     }
   ]
 }
