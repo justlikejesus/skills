@@ -1,0 +1,27 @@
+{
+  "name": "jljm-skills",
+  "description": "Skills marketplace for Just Like Jesus Ministries and Just Like Jesus School",
+  "owner": {
+    "name": "Jay Cho",
+    "email": "jaycho1214@gmail.com"
+  },
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "sermon-helper",
+      "source": "./plugins/sermon-helper",
+      "description": "Drafts and refines sermon outlines, devotionals, and small-group guides.",
+      "category": "ministries",
+      "tags": ["ministries", "sermon", "devotional"]
+    },
+    {
+      "name": "lesson-planner",
+      "source": "./plugins/lesson-planner",
+      "description": "Generates lesson plans, learning objectives, and classroom activities.",
+      "category": "school",
+      "tags": ["school", "education", "curriculum"]
+    }
+  ]
+}
