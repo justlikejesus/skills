@@ -50,19 +50,33 @@ plugins/<plugin>/skills/<skill>/SKILL.md       # one or more skills per plugin
 
 The catalog uses `metadata.pluginRoot: "./plugins"`, so plugin `source` values are relative paths like `./plugins/school-seeders` resolved from the repo root (the directory containing `.claude-plugin/`, **not** the `.claude-plugin/` directory itself).
 
-Plugins are bundled by **shared workflow context**, not by skill count. `school-seeders` groups three distinct skills (`seed-bible-translation`, `seed-course-from-srt`, `seed-quiz-from-srt`) under one plugin because they all target the same `school-monorepo` Neon database and share the two-file (data + executor), single-transaction, idempotent seed pattern. When adding a new skill, prefer extending an existing plugin if the workflow context matches; create a new plugin only when the audience or runtime context genuinely differs.
+Plugins are bundled by **shared workflow context AND runtime posture**, not by skill count. The school side is split along read/write lines:
+
+- `school-seeders` — write-side. Three skills (`seed-bible-translation`, `seed-course-from-srt`, `seed-quiz-from-srt`) that all target the same `school-monorepo` Neon database and share the two-file (data + executor), single-transaction, idempotent seed pattern.
+- `school-evaluators` — read-only. Auditors like `course-content-lint` that score or report against existing content but never write to the DB.
+
+When adding a new skill, place it in the plugin whose runtime posture matches (does it write? evaluator/seeder? same audience?). Create a new plugin only when both the workflow context and the runtime posture genuinely differ — splitting purely to keep names tidy is not worth the install fragmentation.
 
 ## Skill source-of-truth
 
-The skills under `plugins/school-seeders/skills/` are **mirrored** from `~/Codes/jljm/school-monorepo/.claude/skills/`. The monorepo is upstream — that is where the skills are actively developed and tested against the real database. This repo redistributes them.
+The skills under `plugins/school-seeders/skills/` and `plugins/school-evaluators/skills/` are **mirrored** from `~/Codes/jljm/school-monorepo/.claude/skills/`. The monorepo is upstream — that is where the skills are actively developed and tested against the real database. This repo redistributes them.
 
-When updating a school-seeder skill:
+Source-to-plugin mapping:
+
+| `school-monorepo/.claude/skills/<name>` | Plugin in this repo |
+| :--- | :--- |
+| `seed-bible-translation` | `school-seeders` |
+| `seed-course-from-srt` | `school-seeders` |
+| `seed-quiz-from-srt` | `school-seeders` |
+| `course-content-lint` | `school-evaluators` |
+
+When updating a mirrored skill:
 
 1. Edit it in `school-monorepo/.claude/skills/<skill>/SKILL.md` first.
-2. Copy the updated `SKILL.md` over to `plugins/school-seeders/skills/<skill>/SKILL.md`.
-3. Bump `version` in `plugins/school-seeders/.claude-plugin/plugin.json` so installed users actually receive the update — without a version bump, Claude Code's cache treats it as unchanged.
+2. Copy the updated `SKILL.md` over to the matching `plugins/<plugin>/skills/<skill>/SKILL.md` here.
+3. Bump `version` in that plugin's `plugin.json` so installed users actually receive the update — without a version bump, Claude Code's cache treats it as unchanged.
 
-Never edit a school-seeder `SKILL.md` only here; it will drift from the monorepo and be silently overwritten on the next sync.
+Never edit a mirrored `SKILL.md` only here; it will drift from the monorepo and be silently overwritten on the next sync.
 
 ## Plugin versioning gotcha
 

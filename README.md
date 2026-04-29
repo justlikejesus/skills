@@ -26,16 +26,23 @@ _Just Like Jesus Ministries · Just Like Jesus School_
 
 ### 🎓 School (학교)
 
-#### [`school-seeders`](./plugins/school-seeders)
+#### [`school-seeders`](./plugins/school-seeders) — 쓰기 전용 시드
 
-`school-monorepo`의 Neon 데이터베이스에 콘텐츠를 시드(seed)하고, 시드 이후의 드리프트를 감사(lint)하는 도구 모음입니다. 시드 스킬은 **두 단계 출력(데이터 파일 + 실행기)** + **단일 트랜잭션** + **재실행 가능(idempotent)** 패턴을 따르며, 린트 스킬은 **읽기 전용(read-only)** 입니다.
+`school-monorepo`의 Neon 데이터베이스에 콘텐츠를 시드(seed)하는 도구입니다. 모든 스킬은 **두 단계 출력(데이터 파일 + 실행기)** + **단일 트랜잭션** + **재실행 가능(idempotent)** 패턴을 따릅니다.
 
-| 스킬 | 종류 | 설명 |
-| :--- | :--- | :--- |
-| [`seed-bible-translation`](./plugins/school-seeders/skills/seed-bible-translation) | seed | OSIS XML, USFM, Zefania, JSON, CSV/TSV, SQLite 등 모든 일반적인 성경 포맷을 자동 인식하여 `bible_translations` / `bible_books` / `bible_verses` 테이블에 시드합니다 |
-| [`seed-course-from-srt`](./plugins/school-seeders/skills/seed-course-from-srt) | seed | SRT 자막으로부터 한국어 + 영어 이중 언어의 강의 초안(제목, 설명, 챕터, 레슨, 강사 소개, TipTap `detail_page_json`, 비디오 챕터, 성경 구절 마커)을 생성하고 시드합니다. 슬러그가 이미 존재하면 _evaluate-and-feedback_ 모드로 전환됩니다 |
-| [`seed-quiz-from-srt`](./plugins/school-seeders/skills/seed-quiz-from-srt) | seed | 기존 챕터에 부담 없는 시청 확인용(KO + EN) 퀴즈를 시드합니다. `multiple_choice` / `true_false` / `fill_blank`만 사용하며, 강조된 자막 구간을 근거로 합니다 |
-| [`course-content-lint`](./plugins/school-seeders/skills/course-content-lint) | lint | 기존 강의를 18개 등록 전환(enrollment-conversion) 규칙과 구조 규약에 대해 감사합니다. 6개 관점 점수표(전환·교수법·신학적 정합성·이중언어 균형·신뢰·일관성)와 표면별 위반 목록을 마크다운으로 출력하며, **DB는 절대 변경하지 않습니다** |
+| 스킬 | 설명 |
+| :--- | :--- |
+| [`seed-bible-translation`](./plugins/school-seeders/skills/seed-bible-translation) | OSIS XML, USFM, Zefania, JSON, CSV/TSV, SQLite 등 모든 일반적인 성경 포맷을 자동 인식하여 `bible_translations` / `bible_books` / `bible_verses` 테이블에 시드합니다 |
+| [`seed-course-from-srt`](./plugins/school-seeders/skills/seed-course-from-srt) | SRT 자막으로부터 한국어 + 영어 이중 언어의 강의 초안(제목, 설명, 챕터, 레슨, 강사 소개, TipTap `detail_page_json`, 비디오 챕터, 성경 구절 마커)을 생성하고 시드합니다. 슬러그가 이미 존재하면 _evaluate-and-feedback_ 모드로 전환됩니다 |
+| [`seed-quiz-from-srt`](./plugins/school-seeders/skills/seed-quiz-from-srt) | 기존 챕터에 부담 없는 시청 확인용(KO + EN) 퀴즈를 시드합니다. `multiple_choice` / `true_false` / `fill_blank`만 사용하며, 강조된 자막 구간을 근거로 합니다 |
+
+#### [`school-evaluators`](./plugins/school-evaluators) — 읽기 전용 감사
+
+기존 콘텐츠가 규약과 일치하는지 감사하는 **읽기 전용(read-only)** 도구입니다. **DB를 절대 변경하지 않습니다.**
+
+| 스킬 | 설명 |
+| :--- | :--- |
+| [`course-content-lint`](./plugins/school-evaluators/skills/course-content-lint) | 기존 강의를 18개 등록 전환(enrollment-conversion) 규칙과 구조 규약에 대해 감사합니다. 6개 관점 점수표(전환·교수법·신학적 정합성·이중언어 균형·신뢰·일관성)와 표면별 위반 목록을 마크다운으로 출력합니다 |
 
 ### ⛪ Ministries (사역)
 
@@ -57,6 +64,7 @@ Claude Code 안에서 다음 명령어를 실행하세요.
 
 ```shell
 /plugin install school-seeders@jljm-skills
+/plugin install school-evaluators@jljm-skills
 ```
 
 ### 3. 사용해 보기
@@ -77,16 +85,20 @@ skills/
 ├── .claude-plugin/
 │   └── marketplace.json                 # 마켓플레이스 카탈로그
 └── plugins/
-    └── school-seeders/                  # 🎓 School
+    ├── school-seeders/                  # 🎓 School (쓰기)
+    │   ├── .claude-plugin/
+    │   │   └── plugin.json
+    │   └── skills/
+    │       ├── seed-bible-translation/
+    │       │   └── SKILL.md
+    │       ├── seed-course-from-srt/
+    │       │   └── SKILL.md
+    │       └── seed-quiz-from-srt/
+    │           └── SKILL.md
+    └── school-evaluators/               # 🎓 School (읽기)
         ├── .claude-plugin/
         │   └── plugin.json
         └── skills/
-            ├── seed-bible-translation/
-            │   └── SKILL.md
-            ├── seed-course-from-srt/
-            │   └── SKILL.md
-            ├── seed-quiz-from-srt/
-            │   └── SKILL.md
             └── course-content-lint/
                 └── SKILL.md
 ```

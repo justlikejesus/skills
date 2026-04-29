@@ -1,0 +1,9 @@
+{
+  "name": "school-evaluators",
+  "description": "Read-only auditors for the Just Like Jesus School monorepo: lint courses against the enrollment-conversion ruleset and structural conventions.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Jay Cho",
+    "email": "jaycho1214@gmail.com"
+  }
+}
